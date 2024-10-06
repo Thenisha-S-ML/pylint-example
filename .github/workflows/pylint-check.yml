@@ -1,0 +1,42 @@
+name: Pylint Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pylint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          pip install pylint
+
+      - name: Check for Python file changes
+        id: check_changes
+        run: |
+
+          changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          echo "Changed files: $changed_files"
+
+
+          if echo "$changed_files" | grep -q '\.py$'; then
+            echo "python_files_changed=true" >> $GITHUB_ENV
+          else
+            echo "python_files_changed=false" >> $GITHUB_ENV
+          fi
+
+      - name: Run pylint
+        if: env.python_files_changed == 'true'
+        run: |
+          pylint **/*.py
