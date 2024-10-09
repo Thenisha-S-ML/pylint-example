@@ -1,0 +1,16 @@
+name: Self-hosted Runner Test
+
+on: 
+  push:
+    branches:
+      - main  # Change this to your default branch if necessary
+
+jobs:
+  run-on-self-hosted:
+    runs-on: self-hosted  # Specify the self-hosted runner
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run a Test Command
+        run: echo "This job is running on a self-hosted runner!"
